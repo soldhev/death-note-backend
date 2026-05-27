@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Death Note Store{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+  {% if user['foto'] %}
+    <img src="{{ url_for('static', filename='uploads/' + user['foto']) }}" class="profile-avatar" alt="Foto de perfil">
+  {% else %}
+    <div class="profile-avatar-placeholder">{{ user['nome'][0].upper() }}</div>
+  {% endif %}
+  <div>
+    <div class="profile-name">{{ user['nome'] }}</div>
+    <div class="profile-email">{{ user['email'] }}</div>
+    <div class="profile-role">
+      <span class="badge badge-user">Usuário</span>
+      {% if user['must_change_password'] %}
+        <span class="badge badge-warn" style="margin-left:.4rem;">⚠ Troque sua senha</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if user['must_change_password'] %}
+<div class="password-note">
+  ⚠️ <strong>Atenção:</strong> Sua senha foi resetada pelo administrador.
+  Por favor, <a href="{{ url_for('user.change_password') }}" style="color:#f5b942; text-decoration:underline;">altere sua senha agora</a>.
+</div>
+{% endif %}
+
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap:1.2rem; margin-bottom:1.5rem;">
+
+  <div class="card" style="border-left:3px solid #e74c3c;">
+    <div style="font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; color:#666; margin-bottom:.8rem;">Dados Pessoais</div>
+    <div style="display:grid; gap:.6rem;">
+      <div><span style="color:#666; font-size:.8rem;">CPF</span><br>{{ user['cpf'] or '—' }}</div>
+      <div><span style="color:#666; font-size:.8rem;">Telefone</span><br>{{ user['telefone'] or '—' }}</div>
+      <div><span style="color:#666; font-size:.8rem;">Nascimento</span><br>{{ user['data_nasc'] or '—' }}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size:.75rem; text-transform:uppercase; letter-spacing:.5px; color:#666; margin-bottom:.8rem;">Ações</div>
+    <div style="display:flex; flex-direction:column; gap:.7rem;">
+      <a href="{{ url_for('user.edit_profile') }}" class="btn btn-secondary">✏️ Editar meu perfil</a>
+      <a href="{{ url_for('user.change_password') }}" class="btn btn-secondary">🔑 Alterar senha</a>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:.75rem; color:#444; text-align:center;">
+      Conta criada em {{ user['created_at'].strftime('%d/%m/%Y') if user['created_at'] else '—' }}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

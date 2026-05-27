@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Death Note Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+</head>
+<body>
+
+  <header id="header">
+    <a href="{{ url_for('store.index') }}" class="logo">DeathNote<span>Store</span></a>
+    <nav>
+      <a href="{{ url_for('store.index') }}" class="active">Home</a>
+      <a href="{{ url_for('store.produtos') }}">Produtos</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contatos">Contatos</a>
+    </nav>
+    {% if session.user_id %}
+      {% if session.role == 'admin' %}
+        <a href="{{ url_for('admin.dashboard') }}" class="btn-header">Painel Admin</a>
+      {% else %}
+        <a href="{{ url_for('user.dashboard') }}" class="btn-header">Minha Conta</a>
+      {% endif %}
+    {% else %}
+      <a href="{{ url_for('auth.login') }}" class="btn-header">Entrar</a>
+    {% endif %}
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-label">Coleção Oficial — 2026</p>
+      <h1>O mundo pertence<br>a quem escreve.</h1>
+      <p class="hero-sub">Produtos colecionáveis e exclusivos do universo Death Note. Figures, funkos e muito mais.</p>
+      <div class="hero-btns">
+        <a href="{{ url_for('store.produtos') }}" class="btn-primary">Ver Produtos</a>
+        {% if not session.user_id %}
+          <a href="{{ url_for('auth.register') }}" class="btn-ghost">Criar Conta</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="hero-deco">L</div>
+  </section>
+
+  <section class="highlights">
+    <div class="container">
+      <div class="hl-grid">
+        <div class="hl-card">
+          <span class="hl-icon">📦</span>
+          <h3>Frete Grátis</h3>
+          <p>Em compras acima de R$ 150 para todo o Brasil</p>
+        </div>
+        <div class="hl-card">
+          <span class="hl-icon">✦</span>
+          <h3>Produtos Originais</h3>
+          <p>Figures e colecionáveis com certificado de autenticidade</p>
+        </div>
+        <div class="hl-card">
+          <span class="hl-icon">↩</span>
+          <h3>30 Dias p/ Trocar</h3>
+          <p>Devolvemos ou trocamos sem burocracia</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="featured" id="destaque">
+    <div class="container">
+      <div class="section-head">
+        <h2>Destaques</h2>
+        <a href="{{ url_for('store.produtos') }}" class="see-all">Ver todos →</a>
+      </div>
+      <div class="prod-grid">
+        <a href="{{ url_for('store.produtos') }}" class="prod-card">
+          <div class="prod-img">
+            <img src="{{ url_for('static', filename='imgs/p1.jpg') }}" alt="Caderno Death Note + Pena">
+            <span class="tag">Top Vendas</span>
+          </div>
+          <div class="prod-info">
+            <p class="prod-cat">Papelaria</p>
+            <p class="prod-name">Caderno Death Note + Pena</p>
+            <p class="prod-price">R$ 59,90</p>
+          </div>
+        </a>
+        <a href="{{ url_for('store.produtos') }}" class="prod-card">
+          <div class="prod-img">
+            <img src="{{ url_for('static', filename='imgs/p5.jpg') }}" alt="Figure L — Poltrona">
+            <span class="tag new">Novo</span>
+          </div>
+          <div class="prod-info">
+            <p class="prod-cat">Colecionáveis</p>
+            <p class="prod-name">Figure L Lawliet — Poltrona</p>
+            <p class="prod-price">R$ 189,90</p>
+          </div>
+        </a>
+        <a href="{{ url_for('store.produtos') }}" class="prod-card">
+          <div class="prod-img">
+            <img src="{{ url_for('static', filename='imgs/p4.jpg') }}" alt="Figure Light Yagami — Awaken">
+            <span class="tag">Exclusivo</span>
+          </div>
+          <div class="prod-info">
+            <p class="prod-cat">Colecionáveis</p>
+            <p class="prod-name">Figure Light Yagami — Awaken</p>
+            <p class="prod-price">R$ 349,90</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="banner">
+    <div class="container">
+      <p class="banner-label">Oferta limitada</p>
+      <h2>"Só existe justiça<br>para os que agem."</h2>
+      <p>Use o cupom <strong>KIRA10</strong> e ganhe 10% de desconto na primeira compra</p>
+      {% if session.user_id %}
+        <a href="{{ url_for('store.produtos') }}" class="btn-primary">Ver Produtos</a>
+      {% else %}
+        <a href="{{ url_for('auth.register') }}" class="btn-primary">Criar conta e usar cupom</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="faq" id="faq">
+    <div class="container">
+      <h2>Perguntas Frequentes</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Os produtos são originais?
+            <span class="faq-arrow">↓</span>
+          </button>
+          <div class="faq-a">
+            Sim. Trabalhamos apenas com distribuidores oficiais. Todos os produtos acompanham nota fiscal e certificado de autenticidade quando aplicável.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Qual o prazo de entrega?
+            <span class="faq-arrow">↓</span>
+          </button>
+          <div class="faq-a">
+            De 5 a 12 dias úteis para todo o Brasil via Correios ou transportadora. Regiões Sul e Sudeste costumam receber em até 7 dias úteis.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Posso parcelar minha compra?
+            <span class="faq-arrow">↓</span>
+          </button>
+          <div class="faq-a">
+            Sim! Parcelamos em até 12x no cartão de crédito. Compras via PIX têm 5% de desconto automático no checkout.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Posso trocar ou devolver um produto?
+            <span class="faq-arrow">↓</span>
+          </button>
+          <div class="faq-a">
+            Você tem 30 dias corridos a partir da entrega para solicitar troca ou devolução. O produto precisa estar sem uso e na embalagem original.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trabalhe" id="trabalhe">
+    <div class="container two-col">
+      <div class="trabalhe-text">
+        <p class="section-label">Vagas abertas</p>
+        <h2>Trabalhe Conosco</h2>
+        <p>Somos uma equipe pequena e apaixonada por anime. Se você também é, manda seu currículo.</p>
+        <ul class="vagas">
+          <li>Designer Gráfico</li>
+          <li>Atendimento ao Cliente</li>
+          <li>Gestor de Estoque</li>
+        </ul>
+      </div>
+      <div class="trabalhe-form">
+        <input type="text" placeholder="Seu nome completo">
+        <input type="email" placeholder="Seu e-mail">
+        <select>
+          <option value="">Vaga de interesse</option>
+          <option>Designer Gráfico</option>
+          <option>Atendimento ao Cliente</option>
+          <option>Gestor de Estoque</option>
+        </select>
+        <textarea placeholder="Conte um pouco sobre você..." rows="4"></textarea>
+        <button class="btn-primary" onclick="alert('Currículo enviado! Entraremos em contato em breve.')">Enviar Currículo</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="contatos" id="contatos">
+    <div class="container two-col">
+      <div>
+        <p class="section-label">Fale Conosco</p>
+        <h2>Contatos</h2>
+        <div class="contact-list">
+          <p>📧 soldhev@gmail.com</p>
+          <p>📱 (51) 995113270</p>
+          <p>📍 Av. Venâncio Aires, 93 - Cidade Baixa, Porto Alegre - RS</p>
+          <p>🕐 Seg–Sex, 9h às 22h</p>
+        </div>
+        <div class="social-row">
+          <a href="https://github.com/soldhev" target="_blank" class="soc-link">GitHub</a>
+          <a href="https://www.linkedin.com/in/carlos-eduardo-rocha-809394375/" target="_blank" class="soc-link">LinkedIn</a>
+        </div>
+      </div>
+      <div class="map-wrap">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1975!2d-46.6388!3d-23.5489!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMyJzU2LjAiUyA0NsKwMzgnMTkuNiJX!5e0!3m2!1spt-BR!2sbr" allowfullscreen loading="lazy" title="Localização"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-inner">
+      <p class="footer-logo">DeathNote<span>Store</span></p>
+      <p class="footer-copy">© 2026 Death Note Store — Todos os direitos reservados</p>
+      <div class="footer-links">
+        <a href="{{ url_for('store.index') }}">Home</a>
+        <a href="{{ url_for('store.produtos') }}">Produtos</a>
+        {% if not session.user_id %}
+          <a href="{{ url_for('auth.register') }}">Cadastro</a>
+        {% endif %}
+      </div>
+    </div>
+  </footer>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <script>
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+    });
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+  </script>
+</body>
+</html>

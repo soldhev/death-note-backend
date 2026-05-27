@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Painel Admin — Death Note Store{% endblock %}
+
+{% block content %}
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+  <div>
+    <h1 class="page-title">Painel Administrativo</h1>
+    <p class="page-sub" style="margin-bottom:0;">Gerencie usuários do sistema.</p>
+  </div>
+  <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary">+ Novo Usuário</a>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-num">{{ total }}</div>
+    <div class="stat-label">Total de usuários</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">{{ admins }}</div>
+    <div class="stat-label">Administradores</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">{{ total - admins }}</div>
+    <div class="stat-label">Usuários comuns</div>
+  </div>
+</div>
+
+<div class="card">
+  <!-- Busca -->
+  <form method="GET" class="search-bar">
+    <input type="text" name="q" placeholder="Buscar por nome ou e-mail..." value="{{ busca }}">
+    <button type="submit" class="btn btn-secondary">Buscar</button>
+    {% if busca %}<a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">✕ Limpar</a>{% endif %}
+  </form>
+
+  {% if busca %}
+    <p style="color:#666; font-size:.83rem; margin-bottom:1rem;">
+      {{ users|length }} resultado(s) para "<strong style="color:#e0e0e0;">{{ busca }}</strong>"
+    </p>
+  {% endif %}
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuário</th>
+          <th>E-mail</th>
+          <th>Perfil</th>
+          <th>Status</th>
+          <th>Criado em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:.7rem;">
+              {% if u['foto'] %}
+                <img src="{{ url_for('static', filename='uploads/' + u['foto']) }}" class="user-row-avatar" alt="">
+              {% else %}
+                <span class="user-row-placeholder">{{ u['nome'][0].upper() }}</span>
+              {% endif %}
+              <span>{{ u['nome'] }}</span>
+            </div>
+          </td>
+          <td style="color:#999;">{{ u['email'] }}</td>
+          <td>
+            {% if u['role'] == 'admin' %}
+              <span class="badge badge-admin">Admin</span>
+            {% else %}
+              <span class="badge badge-user">Usuário</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if u['must_change_password'] %}
+              <span class="badge badge-warn">⚠ Trocar senha</span>
+            {% else %}
+              <span style="color:#666; font-size:.78rem;">Normal</span>
+            {% endif %}
+          </td>
+          <td style="color:#666; font-size:.82rem;">{{ u['created_at'].strftime('%d/%m/%Y') if u['created_at'] else '—' }}</td>
+          <td>
+            <div class="actions-row">
+              <a href="{{ url_for('admin.edit_user', user_id=u['id']) }}" class="btn btn-secondary btn-sm">✏️ Editar</a>
+
+              <form method="POST" action="{{ url_for('admin.reset_password', user_id=u['id']) }}"
+                    onsubmit="return confirm('Resetar senha de {{ u['nome'] }}?')">
+                <button type="submit" class="btn btn-warning btn-sm">🔑 Reset Senha</button>
+              </form>
+
+              <form method="POST" action="{{ url_for('admin.delete_user', user_id=u['id']) }}"
+                    onsubmit="return confirm('Excluir {{ u['nome'] }} permanentemente?')">
+                <button type="submit" class="btn btn-danger btn-sm">🗑 Excluir</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" style="text-align:center; color:#555; padding:2rem;">
+            {% if busca %}Nenhum usuário encontrado para "{{ busca }}".{% else %}Nenhum usuário cadastrado.{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

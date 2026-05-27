@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Death Note Store{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #111111;
+      --card2: #181818;
+      --line: rgba(255,255,255,.1);
+      --white: #f0f0f0;
+      --muted: #666;
+      --accent: #c0392b;
+      --accent2: #e74c3c;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --info: #2980b9;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: .93rem;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .9rem 2rem;
+      background: rgba(10,10,10,.95);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(8px);
+    }
+    .navbar-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+    }
+    .navbar-logo span { color: var(--accent2); }
+    .navbar-user {
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .navbar-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      object-fit: cover; border: 2px solid var(--accent2);
+    }
+    .navbar-avatar-placeholder {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: .85rem;
+      border: 2px solid var(--accent2);
+    }
+    .navbar-name { font-size: .85rem; color: var(--muted); }
+    .navbar-links { display: flex; align-items: center; gap: 1rem; }
+    .navbar-links a {
+      font-size: .82rem; color: var(--muted);
+      transition: color .2s; padding: .3rem .5rem; border-radius: 4px;
+    }
+    .navbar-links a:hover { color: var(--white); }
+    .navbar-links a.active { color: var(--white); }
+    .btn-logout {
+      background: none; border: 1px solid var(--line);
+      color: var(--muted); padding: .35rem .8rem; border-radius: 4px;
+      cursor: pointer; font-size: .8rem; font-family: 'Inter', sans-serif;
+      transition: all .2s;
+    }
+    .btn-logout:hover { border-color: var(--accent2); color: var(--accent2); }
+
+    /* ── LAYOUT ── */
+    .page-wrap {
+      padding-top: 70px; min-height: 100vh;
+    }
+    .container {
+      max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem;
+    }
+    .container-sm {
+      max-width: 560px; margin: 0 auto; padding: 2rem 1.5rem;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 6px; padding: 1.8rem;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; margin-bottom: .4rem;
+    }
+    .card-sub { color: var(--muted); font-size: .85rem; margin-bottom: 1.6rem; }
+
+    /* ── FORMS ── */
+    .field { margin-bottom: 1.2rem; }
+    .field label {
+      display: block; font-size: .75rem; letter-spacing: .5px;
+      color: var(--muted); margin-bottom: .4rem; text-transform: uppercase;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%; background: var(--card2); border: 1px solid var(--line);
+      color: var(--white); padding: 11px 14px; font-family: 'Inter', sans-serif;
+      font-size: .9rem; outline: none; transition: border-color .2s; border-radius: 4px;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: rgba(255,255,255,.35);
+    }
+    .field select option { background: var(--card2); }
+    .two-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* Avatar upload */
+    .avatar-upload-wrap { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+    .avatar-preview {
+      width: 72px; height: 72px; border-radius: 50%;
+      object-fit: cover; border: 2px solid var(--line); flex-shrink: 0;
+    }
+    .avatar-placeholder {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center;
+      justify-content: center; font-size: 1.4rem; font-weight: 700;
+      color: #fff; flex-shrink: 0; border: 2px solid var(--line);
+    }
+    .upload-info { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: .4rem; padding: .6rem 1.2rem;
+           border-radius: 4px; font-size: .85rem; font-family: 'Inter', sans-serif;
+           cursor: pointer; border: none; transition: all .2s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-secondary { background: var(--card2); color: var(--white); border: 1px solid var(--line); }
+    .btn-secondary:hover { border-color: rgba(255,255,255,.3); }
+    .btn-danger { background: none; color: #e05050; border: 1px solid #e05050; }
+    .btn-danger:hover { background: #e05050; color: #fff; }
+    .btn-warning { background: var(--warning); color: #000; }
+    .btn-warning:hover { background: #e67e22; }
+    .btn-sm { padding: .35rem .8rem; font-size: .78rem; }
+    .btn-full { width: 100%; justify-content: center; margin-top: .5rem; }
+
+    /* ── ALERTS / FLASH ── */
+    .flashes { margin-bottom: 1.2rem; display: flex; flex-direction: column; gap: .5rem; }
+    .alert {
+      padding: .75rem 1rem; border-radius: 4px; font-size: .85rem;
+      border-left: 3px solid;
+    }
+    .alert-error   { background: rgba(224,80,80,.1); border-color: #e05050; color: #e07070; }
+    .alert-success { background: rgba(39,174,96,.1); border-color: var(--success); color: #5ddc8d; }
+    .alert-warning { background: rgba(243,156,18,.1); border-color: var(--warning); color: #f5b942; }
+    .alert-info    { background: rgba(41,128,185,.1); border-color: var(--info); color: #5ba3d0; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left; padding: .7rem 1rem; font-size: .72rem;
+      text-transform: uppercase; letter-spacing: .5px; color: var(--muted);
+      border-bottom: 1px solid var(--line);
+    }
+    tbody tr { border-bottom: 1px solid var(--line); transition: background .15s; }
+    tbody tr:hover { background: var(--card2); }
+    tbody td { padding: .7rem 1rem; font-size: .88rem; vertical-align: middle; }
+    .user-row-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      object-fit: cover; border: 1px solid var(--line);
+    }
+    .user-row-placeholder {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent); display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; color: #fff;
+    }
+    .badge {
+      display: inline-block; padding: .2rem .55rem; border-radius: 20px;
+      font-size: .72rem; font-weight: 600;
+    }
+    .badge-admin { background: rgba(192,57,43,.25); color: var(--accent2); }
+    .badge-user  { background: rgba(255,255,255,.08); color: var(--muted); }
+    .badge-warn  { background: rgba(243,156,18,.2); color: var(--warning); }
+
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--card2); border: 1px solid var(--line); border-radius: 6px; padding: 1.2rem; }
+    .stat-num { font-size: 2rem; font-weight: 700; font-family: 'Playfair Display', serif; }
+    .stat-label { font-size: .75rem; color: var(--muted); margin-top: .2rem; }
+
+    /* ── PROFILE CARD ── */
+    .profile-header {
+      display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;
+    }
+    .profile-avatar {
+      width: 90px; height: 90px; border-radius: 50%;
+      object-fit: cover; border: 3px solid var(--accent2); flex-shrink: 0;
+    }
+    .profile-avatar-placeholder {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: var(--accent); display: flex; align-items: center;
+      justify-content: center; font-size: 2rem; font-weight: 700;
+      color: #fff; flex-shrink: 0; border: 3px solid var(--accent2);
+    }
+    .profile-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; }
+    .profile-email { color: var(--muted); font-size: .85rem; margin-top: .2rem; }
+    .profile-role { margin-top: .5rem; }
+
+    /* ── SEARCH BAR ── */
+    .search-bar { display: flex; gap: .8rem; margin-bottom: 1.5rem; }
+    .search-bar input {
+      flex: 1; background: var(--card2); border: 1px solid var(--line);
+      color: var(--white); padding: .65rem 1rem; border-radius: 4px;
+      font-family: 'Inter', sans-serif; font-size: .9rem; outline: none;
+    }
+    .search-bar input:focus { border-color: rgba(255,255,255,.3); }
+
+    /* ── MISC ── */
+    .page-title {
+      font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: .4rem;
+    }
+    .page-sub { color: var(--muted); margin-bottom: 1.8rem; font-size: .88rem; }
+    .divider { height: 1px; background: var(--line); margin: 1.5rem 0; }
+    .text-muted { color: var(--muted); }
+    .text-center { text-align: center; }
+    .mt-1 { margin-top: .5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .actions-row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; }
+    .password-note {
+      background: rgba(243,156,18,.08); border: 1px solid rgba(243,156,18,.25);
+      border-radius: 4px; padding: .8rem 1rem; font-size: .83rem;
+      color: #f5b942; margin-bottom: 1.2rem;
+    }
+
+    /* Força senha */
+    .senha-forca { display: flex; gap: 4px; margin-top: .5rem; }
+    .forca-bar { flex: 1; height: 3px; background: var(--line); border-radius: 2px; transition: background .3s; }
+    .forca-label { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+
+    @media (max-width: 600px) {
+      .two-fields { grid-template-columns: 1fr; }
+      .profile-header { flex-direction: column; text-align: center; }
+      .actions-row { flex-direction: column; }
+      .navbar { padding: .9rem 1rem; }
+      .container, .container-sm { padding: 1.2rem 1rem; }
+    }
+  </style>
+  {% block extra_styles %}{% endblock %}
+</head>
+<body>
+
+{% if session.user_id %}
+<nav class="navbar">
+  <a href="{{ url_for('store.index') }}" class="navbar-logo">DeathNote<span>Store</span></a>
+  <div class="navbar-links">
+    <a href="{{ url_for('store.index') }}" class="{% if request.endpoint and request.endpoint.startswith('store') %}active{% endif %}">Loja</a>
+    {% if session.role == 'admin' %}
+      <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint and request.endpoint.startswith('admin') %}active{% endif %}">Painel Admin</a>
+    {% else %}
+      <a href="{{ url_for('user.dashboard') }}" class="{% if request.endpoint == 'user.dashboard' %}active{% endif %}">Dashboard</a>
+      <a href="{{ url_for('user.edit_profile') }}" class="{% if request.endpoint == 'user.edit_profile' %}active{% endif %}">Meu Perfil</a>
+    {% endif %}
+  </div>
+  <div class="navbar-user">
+    {% if session.foto %}
+      <img src="{{ url_for('static', filename='uploads/' + session.foto) }}" class="navbar-avatar" alt="">
+    {% else %}
+      <div class="navbar-avatar-placeholder">{{ session.nome[0].upper() }}</div>
+    {% endif %}
+    <span class="navbar-name">{{ session.nome.split()[0] }}</span>
+    <a href="{{ url_for('auth.logout') }}"><button class="btn-logout">Sair</button></a>
+  </div>
+</nav>
+{% endif %}
+
+<div class="page-wrap">
+  <div class="{% block container_class %}container{% endblock %}">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for cat, msg in messages %}
+            <div class="alert alert-{{ cat }}">{{ msg|safe }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

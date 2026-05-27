@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Entrar — Death Note Store{% endblock %}
+{% block container_class %}container-sm{% endblock %}
+
+{% block content %}
+<div style="min-height:calc(100vh - 70px); display:flex; align-items:center; justify-content:center; padding: 2rem 0;">
+<div style="width:100%;">
+
+  <div style="text-align:center; margin-bottom:2rem;">
+    <div style="font-family:'Playfair Display',serif; font-size:2rem; margin-bottom:.3rem;">
+      DeathNote<span style="color:#e74c3c;">Store</span>
+    </div>
+    <div style="color:#666; font-size:.85rem;">Sistema de Gerenciamento</div>
+  </div>
+
+  <div class="card">
+    <h2 class="card-title">Bem-vindo de volta</h2>
+    <p class="card-sub">Entre com suas credenciais.</p>
+
+    <form method="POST" action="{{ url_for('auth.login') }}">
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="light@kira.com" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Sua senha" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Entrar</button>
+    </form>
+
+    <div class="divider"></div>
+    <div style="display:flex; justify-content:space-between; font-size:.82rem; color:#666;">
+      <a href="{{ url_for('auth.register') }}" style="color:#e74c3c;">Criar conta</a>
+      <a href="{{ url_for('auth.forgot_password') }}" style="color:#666; transition:color .2s;" onmouseover="this.style.color='#e0e0e0'" onmouseout="this.style.color='#666'">Esqueci minha senha</a>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:1.5rem; font-size:.75rem; color:#444;">
+    Admin padrão: <strong style="color:#666;">admin@deathnote.com</strong> / <strong style="color:#666;">Admin@123</strong>
+  </div>
+
+</div>
+</div>
+{% endblock %}
